@@ -1,0 +1,27 @@
+name: flutter_permission_handling
+description: A new Flutter project.
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_permission_handling_core:
+    path: flutter_permission_handling_core
+  flutter_permission_handling_ui:
+    path: flutter_permission_handling_ui
+  get_it:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  flutter_lints:
+
+flutter:
+  uses-material-design: true

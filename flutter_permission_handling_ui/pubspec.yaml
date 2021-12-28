@@ -1,0 +1,30 @@
+name: flutter_permission_handling_ui
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  freezed_annotation:
+  flutter_bloc:
+  flutter_permission_handling_core:
+    path: ../flutter_permission_handling_core
+  geolocator:
+  get_it:
+  permission_handler:
+
+dev_dependencies:
+  build_runner:
+  freezed:
+  flutter_test:
+    sdk: flutter
+  
+  flutter_lints:
+
+flutter:
+  uses-material-design: true
