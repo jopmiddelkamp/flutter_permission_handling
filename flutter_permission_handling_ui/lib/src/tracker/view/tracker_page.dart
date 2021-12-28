@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../flutter_permission_handling_ui.dart';
 
 class TrackerPage extends StatelessWidget {
   const TrackerPage({Key? key}) : super(key: key);
 
-  Widget _blocProvider({
-    required Widget child,
-  }) {
-    return BlocProvider(
-      create: (_) => TrackerCubit(
-        deviceGeolocationRepository: GetIt.instance(),
-      )..init(),
-      child: child,
-    );
-  }
-
   @override
   Widget build(
     BuildContext context,
   ) {
-    return _blocProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Tracker'),
-        ),
-        body: const _Body(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tracker'),
+      ),
+      body: const PermissionCheck(
+        permission: Permission.locationWhenInUse,
+        child: _Body(),
       ),
     );
   }
@@ -40,12 +30,15 @@ class _Body extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    return BlocBuilder<TrackerCubit, TrackerState>(
+    return BlocProviderAndBuilder<TrackerCubit, TrackerState>(
+      create: (_) => TrackerCubit(
+        deviceGeolocationRepository: GetIt.instance(),
+      )..init(),
       builder: (context, state) {
         return state.map(
-          loading: (_) => const _LoadingIndicator(),
+          loading: (_) => const LoadingPlaceholder(),
           loaded: (state) => _TrackingInfo(
-            state: state,
+            trackerState: state,
           ),
         );
       },
@@ -53,28 +46,13 @@ class _Body extends StatelessWidget {
   }
 }
 
-class _LoadingIndicator extends StatelessWidget {
-  const _LoadingIndicator({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return const Center(
-      child: CircularProgressIndicator.adaptive(),
-    );
-  }
-}
-
 class _TrackingInfo extends StatelessWidget {
   const _TrackingInfo({
     Key? key,
-    required this.state,
+    required this.trackerState,
   }) : super(key: key);
 
-  final TrackerStateLoaded state;
+  final TrackerStateLoaded trackerState;
 
   @override
   Widget build(
@@ -83,26 +61,29 @@ class _TrackingInfo extends StatelessWidget {
     final titleStyle = Theme.of(context).textTheme.headline6!.copyWith(
           fontWeight: FontWeight.bold,
         );
-    return Column(
-      children: [
-        Text(
-          'Location',
-          style: titleStyle,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '${state.userPosition.latitude}, ${state.userPosition.longitude}',
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Speed',
-          style: titleStyle,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '${state.userPosition.speed} m/s',
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Location',
+            style: titleStyle,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${trackerState.userPosition.latitude}, ${trackerState.userPosition.longitude}',
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Speed',
+            style: titleStyle,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${trackerState.userPosition.speed} m/s',
+          ),
+        ],
+      ),
     );
   }
 }
